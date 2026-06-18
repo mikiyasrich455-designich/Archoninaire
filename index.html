@@ -43,7 +43,6 @@
             border-color: rgba(59, 130, 246, 0.6);
             box-shadow: 0 0 25px rgba(59, 130, 246, 0.15);
         }
-        /* Custom thin tracking scrollbar design */
         .token-scroll::-webkit-scrollbar {
             width: 4px;
         }
@@ -64,7 +63,7 @@
         </div>
         <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-800/60 bg-zinc-950 font-mono text-[10px] text-emerald-400">
             <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            LIVE MAINNET DATA FEED
+            HELIUS RPC GATEWAY CONNECTED
         </div>
     </header>
 
@@ -123,8 +122,8 @@
     </footer>
 
     <script>
-        // Mount primary live Mainnet RPC connection directly
-        const rpcConnection = new solanaWeb3.Connection("https://api.mainnet-beta.solana.com", "confirmed");
+        // YOUR FIXED SECURE HELIUS LINK PLUGGED IN DIRECTLY BELOW
+        const rpcConnection = new solanaWeb3.Connection("https://mainnet-rpc.com/?api-key=cb5a91ff-8dd6-4b7e-90a2-602edcdfd770", "confirmed");
 
         // Open Source Public Mint Identifier Dictionary Mapping for Mainnet Tokens
         const KNOWN_MINTS = {
@@ -143,14 +142,12 @@
             const nativeSolDisplay = document.getElementById('nativeSolDisplay');
             const tokenContainer = document.getElementById('tokenInventoryContainer');
 
-            // Form Pre-validation
             if (!addressInput) {
                 alert("Validation Fault: Address parameter cannot be blank.");
                 return;
             }
 
             try {
-                // Confirm valid base58 composition syntax rules
                 const targetPublicKey = new solanaWeb3.PublicKey(addressInput);
 
                 // UI Loading Trigger States
@@ -158,7 +155,7 @@
                 statusAlert.classList.remove('hidden');
                 resultsLayer.classList.add('hidden');
                 tokenContainer.innerHTML = '';
-                statusAlert.innerText = 'Pinging Solana RPC Mainnet clusters...';
+                statusAlert.innerText = 'Pinging Helius RPC Mainnet clusters...';
 
                 // 1. Fetch Real-Time Native SOL Balances
                 const nativeLamportBalance = await rpcConnection.getBalance(targetPublicKey);
@@ -166,7 +163,7 @@
 
                 // 2. Fetch Live Price Matrix ratios from open Jupiter quote index configurations
                 statusAlert.innerText = 'Resolving current market value pricing routes...';
-                let nativeSolUsdPrice = 145.00; // Intelligent runtime fallback asset pricing if node limits trigger
+                let nativeSolUsdPrice = 145.00; 
                 
                 try {
                     const priceQuery = await fetch("https://api.jup.ag/price/v2?ids=So11111111111111111111111111111111111111112");
@@ -189,20 +186,16 @@
 
                 let trackingTokensFoundCount = 0;
 
-                // Process token mappings loops inside the array
                 parsedTokenAccounts.value.forEach(accountInfo => {
                     const parsedData = accountInfo.account.data.parsed.info;
                     const mintAddress = parsedData.mint;
                     const tokenAmountFloat = parsedData.tokenAmount.uiAmount;
 
-                    // Skip processing dust accounts with dead zero balances
                     if (tokenAmountFloat > 0) {
                         trackingTokensFoundCount++;
                         
-                        // Check if token details exist in local ledger registry mapping
                         const metadata = KNOWN_MINTS[mintAddress] || { name: "Unknown Token", symbol: `SPL (${mintAddress.slice(0, 4)})`, decimals: parsedData.tokenAmount.decimals };
                         
-                        // Append markup layouts straight onto the DOM view node elements safely
                         const tokenRow = document.createElement('div');
                         tokenRow.className = "flex justify-between items-center bg-zinc-900/40 border border-zinc-950 rounded-xl p-3 hover:bg-zinc-900/80 transition-colors duration-200";
                         tokenRow.innerHTML = `
@@ -218,7 +211,6 @@
                     }
                 });
 
-                // Handle view styling changes if wallet balance portfolio array returns clean empty states
                 if (trackingTokensFoundCount === 0) {
                     tokenContainer.innerHTML = `<div class="text-center py-6 text-zinc-600 font-mono text-[11px] bg-zinc-900/20 rounded-xl border border-dashed border-zinc-900">No active SPL token positions tracked.</div>`;
                 }
