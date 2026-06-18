@@ -3,276 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archon // All-Time Lifetime Volume</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Archon // Lifetime Volume Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['Geist Mono', 'monospace'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { background-color: #020202; }
-        .premium-blur { backdrop-filter: blur(24px); background: rgba(10, 10, 12, 0.7); }
-        .glow-card { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid rgba(39, 39, 42, 0.5); }
-        .glow-card:hover { border-color: rgba(59, 130, 246, 0.3); box-shadow: 0 30px 60px -15px rgba(59, 130, 246, 0.08); transform: translateY(-2px); }
-        .input-glow:focus { border-color: rgba(59, 130, 246, 0.6); box-shadow: 0 0 25px rgba(59, 130, 246, 0.15); }
-        .custom-scroll::-webkit-scrollbar { width: 4px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #27272a; border-radius: 10px; }
-    </style>
 </head>
-<body class="text-zinc-100 min-h-screen flex flex-col justify-between antialiased selection:bg-blue-500/20 selection:text-blue-300">
-
-    <header class="w-full max-w-7xl mx-auto flex justify-between items-center px-6 py-6 border-b border-zinc-900/50 sticky top-0 z-50 premium-blur">
-        <div class="flex items-center gap-3">
-            <div class="h-6 w-6 rounded-md bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center">
-                <span class="text-[10px] font-bold text-white font-mono">⚡</span>
-            </div>
-            <span class="text-xs font-bold tracking-widest text-zinc-200 uppercase font-mono">Archon // Absolute Account Footprint</span>
+<body class="bg-zinc-950 text-white p-8">
+    <div class="max-w-xl mx-auto space-y-6">
+        <h1 class="text-2xl font-bold">Lifetime Volume Auditor</h1>
+        <input id="addressInput" type="text" placeholder="Paste Solana address..." class="w-full bg-zinc-900 p-4 rounded-xl border border-zinc-700">
+        <button id="inspectBtn" class="w-full bg-blue-600 p-4 rounded-xl font-bold">Audit Lifetime Volume</button>
+        <div id="statusAlert" class="text-blue-400 font-mono hidden">Processing...</div>
+        <div id="results" class="hidden space-y-4">
+            <h2 id="totalValue" class="text-4xl font-mono text-emerald-400">$0.00</h2>
+            <div id="log" class="text-xs font-mono space-y-2"></div>
         </div>
-        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-800/60 bg-zinc-950 font-mono text-[10px] text-blue-400">
-            <span class="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse"></span>
-            GENESIS BACK-PARSER NODE LINKED
-        </div>
-    </header>
-
-    <main class="flex-grow flex items-center justify-center p-4 py-12">
-        <div class="w-full max-w-xl space-y-8">
-            
-            <div class="text-center space-y-2">
-                <h1 class="text-3xl font-bold tracking-tight text-white bg-clip-text">All-Time Account Volume</h1>
-                <p class="text-zinc-400 text-xs font-light">Calculates every single cent of value that has moved through this wallet address since creation date.</p>
-            </div>
-
-            <div class="glow-card bg-zinc-950/40 rounded-3xl p-6 md:p-8 premium-blur space-y-6">
-                
-                <div class="space-y-2">
-                    <label class="block text-[10px] uppercase tracking-widest text-zinc-500 font-semibold font-mono" for="addressInput">Target Wallet Address</label>
-                    <input 
-                        id="addressInput" 
-                        type="text" 
-                        placeholder="Paste Solana address to analyze absolute history..." 
-                        class="input-glow w-full bg-zinc-950 border border-zinc-800/80 rounded-xl px-4 py-3.5 font-mono text-xs text-zinc-200 outline-none transition-all placeholder-zinc-700"
-                        spellcheck="false"
-                        autocomplete="off"
-                    >
-                </div>
-
-                <button id="inspectBtn" class="w-full bg-white text-zinc-950 hover:bg-blue-600 hover:text-white text-xs font-bold uppercase tracking-wider py-4 rounded-xl transition-all shadow-xl shadow-white/5 active:scale-[0.99]">
-                    Process Absolute Lifetime Volume
-                </button>
-
-                <div id="statusAlert" class="hidden text-center font-mono text-xs text-zinc-500 animate-pulse py-2">
-                    Awaiting target execution sequence...
-                </div>
-
-                <div id="resultsLayer" class="hidden space-y-6 pt-4 border-t border-zinc-900/80 transition-all duration-500">
-                    
-                    <div class="text-center py-6 bg-zinc-950/60 border border-zinc-900/60 rounded-2xl space-y-1">
-                        <span class="text-[10px] uppercase tracking-widest text-zinc-400 font-mono font-medium tracking-wider">Absolute Lifetime Capital Interacted</span>
-                        <h2 id="lifetimeIncomeDisplay" class="text-4xl font-bold font-mono tracking-tight text-blue-400 mt-1">$0.00</h2>
-                        <span id="txCountDisplay" class="text-[11px] font-mono text-zinc-500 block">Audited 0 Transactions</span>
-                    </div>
-
-                    <div class="space-y-3">
-                        <span class="text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium">Historical Transaction Value Logs</span>
-                        <div id="historyLogContainer" class="custom-scroll max-h-56 overflow-y-auto space-y-2 pr-1">
-                            </div>
-                    </div>
-
-                </div>
-
-            </div>
-        </div>
-    </main>
-
-    <footer class="w-full text-center text-[10px] text-zinc-700 font-mono py-6 border-t border-zinc-900/20 select-none">
-        ARCHON LTI CORE ENGINE V5.0 // STRUCTURAL BALANCE ANALYZER
-    </footer>
+    </div>
 
     <script>
-        const HELIUS_KEY = "cb5a91ff-8dd6-4b7e-90a2-602edcdfd770";
-        const rpcEndpoint = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_KEY}`;
+        const KEY = "cb5a91ff-8dd6-4b7e-90a2-602edcdfd770";
+        const RPC = `https://mainnet.helius-rpc.com/?api-key=${KEY}`;
 
-        // Centralized helper to coordinate base JSON-RPC schema operations smoothly
-        async function callRpc(method, params) {
-            const res = await fetch(rpcEndpoint, {
+        async function fetchRpc(method, params) {
+            const res = await fetch(RPC, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ jsonrpc: '2.0', id: 'archon-req', method, params })
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({jsonrpc: '2.0', id: 1, method, params})
             });
-            const payload = await res.json();
-            if (payload.error) throw new Error(payload.error.message);
-            return payload.result;
+            const data = await res.json();
+            if (data.error) throw new Error(data.error.message);
+            return data.result;
         }
 
         document.getElementById('inspectBtn').addEventListener('click', async () => {
-            const addressInput = document.getElementById('addressInput').value.trim();
-            const inspectBtn = document.getElementById('inspectBtn');
-            const statusAlert = document.getElementById('statusAlert');
-            const resultsLayer = document.getElementById('resultsLayer');
-            const lifetimeIncomeDisplay = document.getElementById('lifetimeIncomeDisplay');
-            const txCountDisplay = document.getElementById('txCountDisplay');
-            const historyLogContainer = document.getElementById('historyLogContainer');
-
-            if (!addressInput) {
-                alert("Validation Fault: Address cannot be empty.");
-                return;
-            }
+            const addr = document.getElementById('addressInput').value.trim();
+            const logDiv = document.getElementById('log');
+            const status = document.getElementById('statusAlert');
+            
+            status.classList.remove('hidden');
+            logDiv.innerHTML = '';
 
             try {
-                inspectBtn.disabled = true;
-                statusAlert.classList.remove('hidden');
-                resultsLayer.classList.add('hidden');
-                historyLogContainer.innerHTML = '';
-                statusAlert.innerText = 'Extracting complete signature index chains from genesis blocks...';
+                // 1. Get History Signatures
+                const sigs = await fetchRpc('getSignaturesForAddress', [addr, {limit: 20}]);
+                let totalUsd = 0;
 
-                // 1. Fetch ALL historical transaction footprints
-                const signaturesData = await callRpc('getSignaturesForAddress', [
-                    addressInput,
-                    { limit: 40 }
-                ]);
+                // 2. Process Transactions Individually
+                for (let s of sigs) {
+                    const tx = await fetchRpc('getTransaction', [s.signature, {encoding: 'json', maxSupportedTransactionVersion: 0}]);
+                    if (!tx || !tx.meta) continue;
 
-                if (!signaturesData || signaturesData.length === 0) {
-                    historyLogContainer.innerHTML = `<div class="text-center py-6 text-zinc-600 font-mono text-[11px] bg-zinc-900/20 rounded-xl border border-dashed border-zinc-900">Zero transaction footprints recorded on this address.</div>`;
-                    lifetimeIncomeDisplay.innerText = "$0.00";
-                    txCountDisplay.innerText = `Audited 0 Transactions`;
-                    statusAlert.classList.add('hidden');
-                    resultsLayer.classList.remove('hidden');
-                    return;
+                    let txNet = 0;
+                    const idx = tx.transaction.message.accountKeys.indexOf(addr);
+                    if (idx === -1) continue;
+
+                    // SOL Delta
+                    const solDelta = Math.abs((tx.meta.postBalances[idx] || 0) - (tx.meta.preBalances[idx] || 0)) / 1e9;
+                    txNet += (solDelta * 145); // Using fallback price
+
+                    // Token Delta
+                    const pre = (tx.meta.preTokenBalances || []).filter(b => b.accountIndex === idx);
+                    const post = (tx.meta.postTokenBalances || []).filter(b => b.accountIndex === idx);
+                    
+                    for (let p of post) {
+                        const preBal = pre.find(b => b.mint === p.mint)?.uiTokenAmount.uiAmount || 0;
+                        txNet += Math.abs((p.uiTokenAmount.uiAmount || 0) - preBal); 
+                    }
+
+                    totalUsd += txNet;
+                    logDiv.innerHTML += `<div class="p-2 bg-zinc-900 rounded">Tx ${s.signature.slice(0,6)}... Volume: $${txNet.toFixed(2)}</div>`;
                 }
 
-                statusAlert.innerText = `Gathering data metrics for ${signaturesData.length} indexed signatures...`;
-                const signatureStrings = signaturesData.map(s => s.signature);
-
-                // 2. Query full systemic transaction details
-                const batchTransactions = await callRpc('getTransactions', [
-                    signatureStrings,
-                    { encoding: 'json', maxSupportedTransactionVersion: 0 }
-                ]);
-
-                // Collect distinct mint tracking sets for pricing lookups
-                let uniqueMints = ["So11111111111111111111111111111111111111112"];
-                batchTransactions.forEach(tx => {
-                    if (!tx || !tx.meta) return;
-                    if (tx.meta.preTokenBalances) {
-                        tx.meta.preTokenBalances.forEach(b => { if(b.mint) uniqueMints.push(b.mint); });
-                    }
-                    if (tx.meta.postTokenBalances) {
-                        tx.meta.postTokenBalances.forEach(b => { if(b.mint) uniqueMints.push(b.mint); });
-                    }
-                });
-                uniqueMints = [...new Set(uniqueMints)];
-
-                statusAlert.innerText = 'Calculating live asset price matrices via Jupiter routers...';
-                let priceMap = {};
-                try {
-                    const priceQuery = await fetch(`https://api.jup.ag/price/v2?ids=${uniqueMints.join(',')}`);
-                    if (priceQuery.ok) {
-                        const priceResult = await priceQuery.json();
-                        priceMap = priceResult.data || {};
-                    }
-                } catch (e) { console.warn("Jupiter price index down, using fallback:", e); }
-
-                let aggregateTotalLifetimeUsd = 0;
-                let parsedValidTxCount = 0;
-
-                // 3. Structural balance variance analysis engine
-                batchTransactions.forEach((tx, idx) => {
-                    if (!tx || !tx.meta || !tx.transaction) return;
-                    parsedValidTxCount++;
-
-                    let txNetVolumeUsd = 0;
-                    const accountKeysList = tx.transaction.message.accountKeys;
-                    const walletIndexInTx = accountKeysList.indexOf(addressInput);
-
-                    if (walletIndexInTx === -1) return; // Skip if wallet wasn't directly part of the structural index array
-
-                    // A. Analyze SOL structural delta fluctuations
-                    const preSol = tx.meta.preBalances[walletIndexInTx] || 0;
-                    const postSol = tx.meta.postBalances[walletIndexInTx] || 0;
-                    const solDelta = Math.abs(postSol - preSol) / 1000000000;
-
-                    if (solDelta > 0) {
-                        const solPriceObj = priceMap["So11111111111111111111111111111111111111112"];
-                        const solPrice = solPriceObj ? parseFloat(solPriceObj.price) : 145.00;
-                        txNetVolumeUsd += (solDelta * solPrice);
-                    }
-
-                    // B. Analyze SPL Token structural balance variances (Trades, Transfers, Mints)
-                    // Check every post/pre variance row to flag exactly what arrived/left this specific account
-                    const userPreTokenBalances = (tx.meta.preTokenBalances || []).filter(b => b.accountIndex === walletIndexInTx);
-                    const userPostTokenBalances = (tx.meta.postTokenBalances || []).filter(b => b.accountIndex === walletIndexInTx);
-
-                    let trackedMintsInTx = [...new Set([
-                        ...userPreTokenBalances.map(b => b.mint),
-                        ...userPostTokenBalances.map(b => b.mint)
-                    ])];
-
-                    trackedMintsInTx.forEach(mintAddress => {
-                        const preObj = userPreTokenBalances.find(b => b.mint === mintAddress);
-                        const postObj = userPostTokenBalances.find(b => b.mint === mintAddress);
-
-                        const preAmount = preObj && preObj.uiTokenAmount ? (preObj.uiTokenAmount.uiAmount || 0) : 0;
-                        const postAmount = postObj && postObj.uiTokenAmount ? (postObj.uiTokenAmount.uiAmount || 0) : 0;
-                        const tokenDelta = Math.abs(postAmount - preAmount);
-
-                        if (tokenDelta > 0) {
-                            const tokenPriceObj = priceMap[mintAddress];
-                            const tokenPrice = tokenPriceObj ? parseFloat(tokenPriceObj.price) : 0;
-                            txNetVolumeUsd += (tokenDelta * tokenPrice);
-                        }
-                    });
-
-                    aggregateTotalLifetimeUsd += txNetVolumeUsd;
-
-                    // Write execution logs down to display framework UI elements
-                    const logRow = document.createElement('div');
-                    logRow.className = "flex justify-between items-center bg-zinc-900/30 border border-zinc-900/60 rounded-xl p-3 text-xs font-mono";
-                    
-                    const dateString = signaturesData[idx] && signaturesData[idx].blockTime 
-                        ? new Date(signaturesData[idx].blockTime * 1000).toLocaleDateString() 
-                        : "Confirmed Block";
-
-                    logRow.innerHTML = `
-                        <div class="text-left">
-                            <span class="text-blue-400 font-medium block uppercase text-[10px] tracking-wider">🔗 ACTIVITY DETECTED</span>
-                            <span class="text-[9px] text-zinc-600 block">${dateString} // Sig: ${signatureStrings[idx].slice(0, 8)}...</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="font-medium text-zinc-200 block">$${txNetVolumeUsd.toFixed(2)}</span>
-                        </div>
-                    `;
-                    historyLogContainer.appendChild(logRow);
-                });
-
-                // Final valuation display configurations
-                lifetimeIncomeDisplay.innerText = new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'USD'
-                }).format(aggregateTotalLifetimeUsd);
-
-                txCountDisplay.innerText = `Audited ${parsedValidTxCount} Historical Activity Chains`;
-
-                statusAlert.classList.add('hidden');
-                resultsLayer.classList.remove('hidden');
-
-            } catch (err) {
-                console.error(err);
-                alert(`Audit Failure: ${err.message}.`);
-                statusAlert.classList.add('hidden');
+                document.getElementById('totalValue').innerText = `$${totalUsd.toFixed(2)}`;
+                document.getElementById('results').classList.remove('hidden');
+            } catch (e) {
+                alert("Audit Error: " + e.message);
             } finally {
-                inspectBtn.disabled = false;
+                status.classList.add('hidden');
             }
         });
     </script>
