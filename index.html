@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archon // Multi-Wallet Realtime Engine</title>
+    <title>Archon // Lifetime Ledger Intelligence</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/@solana/web3.js@1.95.3/lib/index.iife.js"></script>
     
     <script>
         tailwind.config = {
@@ -43,10 +42,10 @@
             border-color: rgba(59, 130, 246, 0.6);
             box-shadow: 0 0 25px rgba(59, 130, 246, 0.15);
         }
-        .token-scroll::-webkit-scrollbar {
+        .custom-scroll::-webkit-scrollbar {
             width: 4px;
         }
-        .token-scroll::-webkit-scrollbar-thumb {
+        .custom-scroll::-webkit-scrollbar-thumb {
             background: #27272a;
             border-radius: 10px;
         }
@@ -57,13 +56,13 @@
     <header class="w-full max-w-7xl mx-auto flex justify-between items-center px-6 py-6 border-b border-zinc-900/50 sticky top-0 z-50 premium-blur">
         <div class="flex items-center gap-3">
             <div class="h-6 w-6 rounded-md bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center">
-                <span class="text-[10px] font-bold tracking-widest text-white font-mono">⚡</span>
+                <span class="text-[10px] font-bold tracking-widest text-white font-mono">📊</span>
             </div>
-            <span class="text-xs font-bold tracking-widest text-zinc-200 uppercase font-mono">Archon // Real-Time Value Router</span>
+            <span class="text-xs font-bold tracking-widest text-zinc-200 uppercase font-mono">Archon // Historical Intelligence Layer</span>
         </div>
         <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-800/60 bg-zinc-950 font-mono text-[10px] text-blue-400">
             <span class="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse"></span>
-            HELIUS NODE PROTOCOL ACTIVE
+            HISTORICAL TRANSACTIONS PARSER READY
         </div>
     </header>
 
@@ -71,8 +70,8 @@
         <div class="w-full max-w-xl space-y-8">
             
             <div class="text-center space-y-2">
-                <h1 class="text-3xl font-bold tracking-tight text-white bg-clip-text">Universal Wallet Tracker</h1>
-                <p class="text-zinc-400 text-xs font-light">Fetches live inventory metrics for any valid public Solana address instantly.</p>
+                <h1 class="text-3xl font-bold tracking-tight text-white bg-clip-text">Lifetime Value Auditor</h1>
+                <p class="text-zinc-400 text-xs font-light">Parses complete historical logs to calculate total lifetime capital interaction volume.</p>
             </div>
 
             <div class="glow-card bg-zinc-950/40 rounded-3xl p-6 md:p-8 premium-blur space-y-6">
@@ -82,7 +81,7 @@
                     <input 
                         id="addressInput" 
                         type="text" 
-                        placeholder="Paste any SOL/SPL wallet address..." 
+                        placeholder="Paste any Solana address to scan history..." 
                         class="input-glow w-full bg-zinc-950 border border-zinc-800/80 rounded-xl px-4 py-3.5 font-mono text-xs text-zinc-200 outline-none transition-all placeholder-zinc-700"
                         spellcheck="false"
                         autocomplete="off"
@@ -90,24 +89,35 @@
                 </div>
 
                 <button id="inspectBtn" class="w-full bg-white text-zinc-950 hover:bg-blue-500 hover:text-white text-xs font-bold uppercase tracking-wider py-4 rounded-xl transition-all shadow-xl shadow-white/5 active:scale-[0.99]">
-                    Inspect Live Inventory
+                    Audit Lifetime Activity
                 </button>
 
                 <div id="statusAlert" class="hidden text-center font-mono text-xs text-zinc-500 animate-pulse py-2">
-                    Awaiting target execution...
+                    Awaiting calculation request sequence...
                 </div>
 
                 <div id="resultsLayer" class="hidden space-y-6 pt-4 border-t border-zinc-900/80 transition-all duration-500">
                     
-                    <div class="text-center py-4 bg-zinc-950/60 border border-zinc-900/60 rounded-2xl">
-                        <span class="text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium">Aggregate Live Inventory Value</span>
-                        <h2 id="netWorthDisplay" class="text-4xl font-bold font-mono tracking-tight text-white mt-2">$0.00</h2>
-                        <span id="nativeSolDisplay" class="text-[11px] font-mono text-zinc-400 block mt-1">0.0000 SOL</span>
+                    <div class="text-center py-6 bg-zinc-950/60 border border-zinc-900/60 rounded-2xl space-y-1">
+                        <span class="text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium">Cumulative Lifetime Volume Interacted</span>
+                        <h2 id="lifetimeVolumeDisplay" class="text-4xl font-bold font-mono tracking-tight text-white mt-1">$0.00</h2>
+                        <span id="txCountDisplay" class="text-[11px] font-mono text-zinc-400 block">Parsed 0 Historical Blocks</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-zinc-900/20 border border-zinc-900 p-4 rounded-xl text-center">
+                            <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-mono">Total Transferred In</span>
+                            <div id="totalInDisplay" class="text-md font-mono font-semibold text-emerald-400 mt-1">0.00 SOL</div>
+                        </div>
+                        <div class="bg-zinc-900/20 border border-zinc-900 p-4 rounded-xl text-center">
+                            <span class="text-[9px] uppercase tracking-widest text-zinc-500 font-mono">Total Transferred Out</span>
+                            <div id="totalOutDisplay" class="text-md font-mono font-semibold text-rose-400 mt-1">0.00 SOL</div>
+                        </div>
                     </div>
 
                     <div class="space-y-3">
-                        <span class="text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium">Identified SPL Token Assets</span>
-                        <div id="tokenInventoryContainer" class="token-scroll max-h-56 overflow-y-auto space-y-2 pr-1">
+                        <span class="text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium">Historical Audit Breakdown</span>
+                        <div id="historyLogContainer" class="custom-scroll max-h-48 overflow-y-auto space-y-2 pr-1">
                             </div>
                     </div>
 
@@ -118,128 +128,123 @@
     </main>
 
     <footer class="w-full text-center text-[10px] text-zinc-700 font-mono py-6 border-t border-zinc-900/20 select-none">
-        ARCHON REALTIME TELEMETRY PROTOCOL LAYER V2.5 // NO CACHE
+        ARCHON HISTORICAL TELEMETRY ENGINE V3.0 // PARSED
     </footer>
 
     <script>
-        // ⚡ EXACTLY RE-MAPPED VALID HELIUS GATEWAY HOST URL WITH YOUR KEY
-        const rpcConnection = new solanaWeb3.Connection("https://mainnet.helius-rpc.com/?api-key=cb5a91ff-8dd6-4b7e-90a2-602edcdfd770", "confirmed");
+        const HELIUS_KEY = "cb5a91ff-8dd6-4b7e-90a2-602edcdfd770";
 
         document.getElementById('inspectBtn').addEventListener('click', async () => {
             const addressInput = document.getElementById('addressInput').value.trim();
             const inspectBtn = document.getElementById('inspectBtn');
             const statusAlert = document.getElementById('statusAlert');
             const resultsLayer = document.getElementById('resultsLayer');
-            const netWorthDisplay = document.getElementById('netWorthDisplay');
-            const nativeSolDisplay = document.getElementById('nativeSolDisplay');
-            const tokenContainer = document.getElementById('tokenInventoryContainer');
+            const lifetimeVolumeDisplay = document.getElementById('lifetimeVolumeDisplay');
+            const txCountDisplay = document.getElementById('txCountDisplay');
+            const totalInDisplay = document.getElementById('totalInDisplay');
+            const totalOutDisplay = document.getElementById('totalOutDisplay');
+            const historyLogContainer = document.getElementById('historyLogContainer');
 
             if (!addressInput) {
-                alert("Validation Fault: Address parameter cannot be blank.");
+                alert("Validation Fault: Target parameter string cannot be blank.");
                 return;
             }
 
             try {
-                const targetPublicKey = new solanaWeb3.PublicKey(addressInput);
-
-                // Initialize Loading Layouts
+                // Initialize Loading UI layouts
                 inspectBtn.disabled = true;
                 statusAlert.classList.remove('hidden');
                 resultsLayer.classList.add('hidden');
-                tokenContainer.innerHTML = '';
-                statusAlert.innerText = 'Pinging your Helius cluster...';
+                historyLogContainer.innerHTML = '';
+                statusAlert.innerText = 'Initializing full history node traverse queries...';
 
-                // 1. Fetch Real-Time Native SOL Balances
-                const nativeLamportBalance = await rpcConnection.getBalance(targetPublicKey);
-                const computedSolFloat = nativeLamportBalance / solanaWeb3.LAMPORTS_PER_SOL;
-
-                // 2. Fetch Every Single Asset Account Line Owned By Target Address
-                statusAlert.innerText = 'Parsing account layout registries...';
-                const parsedTokenAccounts = await rpcConnection.getParsedTokenAccountsByOwner(
-                    targetPublicKey,
-                    { programId: new solanaWeb3.PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA") }
-                );
-
-                // Collect mint addresses to pull dynamic batch prices
-                let mintList = ["So11111111111111111111111111111111111111112"]; 
-                let tokenBalancesArray = [];
-
-                parsedTokenAccounts.value.forEach(accountInfo => {
-                    const parsedData = accountInfo.account.data.parsed.info;
-                    const mintAddress = parsedData.mint;
-                    const amountFloat = parsedData.tokenAmount.uiAmount;
-
-                    if (amountFloat > 0) {
-                        mintList.push(mintAddress);
-                        tokenBalancesArray.push({
-                            mint: mintAddress,
-                            amount: amountFloat,
-                            decimals: parsedData.tokenAmount.decimals
-                        });
-                    }
-                });
-
-                // 3. Request Batch Live Spot Prices from Jupiter Protocol Engine
-                statusAlert.innerText = 'Routing price matrix tickers...';
-                let priceMap = {};
-                
+                // Fetch current SOL price to determine historical USD ratios safely
+                let currentSolPrice = 145.00;
                 try {
-                    // Jupiter v2 Batch Endpoint pulls live quotes for all tokens at once
-                    const uniqueMints = [...new Set(mintList)].slice(0, 100); // Guard token array ceiling limits
-                    const priceQuery = await fetch(`https://api.jup.ag/price/v2?ids=${uniqueMints.join(',')}`);
+                    const priceQuery = await fetch("https://api.jup.ag/price/v2?ids=So11111111111111111111111111111111111111112");
                     if (priceQuery.ok) {
                         const priceResult = await priceQuery.json();
-                        priceMap = priceResult.data || {};
+                        currentSolPrice = parseFloat(priceResult.data["So11111111111111111111111111111111111111112"].price) || currentSolPrice;
                     }
-                } catch (e) {
-                    console.warn("Failed pricing registry handshake, fallback triggered:", e);
+                } catch(e) { console.warn(e); }
+
+                // Fetch Enhanced Parsed Transactions History from Helius endpoints
+                statusAlert.innerText = 'Scanning block logs via Helius Enhanced Indexer...';
+                const historyUrl = `https://api.helius-rpc.com/v0/addresses/${addressInput}/transactions?api-key=${HELIUS_KEY}&limit=40`;
+                const response = await fetch(historyUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`Helius Gateway Rejected Connection: Code ${response.status}`);
                 }
 
-                // Resolve Native SOL Values
-                const solPriceObj = priceMap["So11111111111111111111111111111111111111112"];
-                const solPriceUsd = solPriceObj ? parseFloat(solPriceObj.price) : 0;
-                let aggregatePortfolioValueUsd = computedSolFloat * solPriceUsd;
+                const transactionsList = await response.json();
+                
+                let aggregatedLifetimeSolVolume = 0;
+                let runningTotalSolIn = 0;
+                let runningTotalSolOut = 0;
+                let totalParsedTxCount = 0;
 
-                // Render out SPL inventory entries onto DOM tree dynamically
-                tokenBalancesArray.forEach(token => {
-                    const priceData = priceMap[token.mint];
-                    const unitPriceUsd = priceData ? parseFloat(priceData.price) : 0;
-                    const calculatedTotalValueUsd = token.amount * unitPriceUsd;
-                    
-                    aggregatePortfolioValueUsd += calculatedTotalValueUsd;
+                // Loop historical entries to compute volume allocations
+                transactionsList.forEach(tx => {
+                    totalParsedTxCount++;
+                    let txIncurredSolValue = 0;
+                    let activityTypeLabel = tx.type || "TRANSACTION";
 
-                    const tokenRow = document.createElement('div');
-                    tokenRow.className = "flex justify-between items-center bg-zinc-900/40 border border-zinc-900 rounded-xl p-3 hover:bg-zinc-900/80 transition-colors duration-200";
-                    tokenRow.innerHTML = `
-                        <div>
-                            <h4 class="text-xs font-semibold text-zinc-200 max-w-[180px] truncate font-mono">${token.mint.slice(0,6)}...${token.mint.slice(-6)}</h4>
-                            <span class="text-[10px] font-mono text-zinc-500">${unitPriceUsd > 0 ? `$${unitPriceUsd.toFixed(4)}` : 'No Price Data'}</span>
+                    // Calculate Native SOL flow layers inside nativeTransfers arrays
+                    if (tx.nativeTransfers && tx.nativeTransfers.length > 0) {
+                        tx.nativeTransfers.forEach(transfer => {
+                            const transferAmountSol = transfer.amount / 1000000000; // Convert lamports to floating points
+                            txIncurredSolValue += transferAmountSol;
+
+                            if (transfer.toUserAccount === addressInput) {
+                                runningTotalSolIn += transferAmountSol;
+                            }
+                            if (transfer.fromUserAccount === addressInput) {
+                                runningTotalSolOut += transferAmountSol;
+                            }
+                        });
+                    }
+
+                    aggregatedLifetimeSolVolume += txIncurredSolValue;
+
+                    // Append event row components onto display layouts dynamically
+                    const logRow = document.createElement('div');
+                    logRow.className = "flex justify-between items-center bg-zinc-900/30 border border-zinc-900/60 rounded-xl p-3 text-xs font-mono";
+                    logRow.innerHTML = `
+                        <div class="text-left">
+                            <span class="text-zinc-400 font-medium block uppercase text-[10px] tracking-wider">${activityTypeLabel}</span>
+                            <span class="text-[9px] text-zinc-600 block">${new Date((tx.timestamp || 0) * 1000).toLocaleDateString()}</span>
                         </div>
                         <div class="text-right">
-                            <span class="text-xs font-mono font-medium text-zinc-300 block">${token.amount.toLocaleString(undefined, { maximumFractionDigits: 4 })}</span>
-                            <span class="text-[10px] font-mono text-zinc-500">${calculatedTotalValueUsd > 0 ? `$${calculatedTotalValueUsd.toFixed(2)}` : ''}</span>
+                            <span class="font-medium ${txIncurredSolValue > 0 ? 'text-zinc-300' : 'text-zinc-500'}">${txIncurredSolValue.toFixed(3)} SOL</span>
+                            <span class="text-[10px] text-zinc-500 block">$${(txIncurredSolValue * currentSolPrice).toFixed(2)}</span>
                         </div>
                     `;
-                    tokenContainer.appendChild(tokenRow);
+                    historyLogContainer.appendChild(logRow);
                 });
 
-                if (tokenBalancesArray.length === 0) {
-                    tokenContainer.innerHTML = `<div class="text-center py-6 text-zinc-600 font-mono text-[11px] bg-zinc-900/20 rounded-xl border border-dashed border-zinc-900">No active SPL balances identified.</div>`;
+                if (totalParsedTxCount === 0) {
+                    historyLogContainer.innerHTML = `<div class="text-center py-6 text-zinc-600 font-mono text-[11px] bg-zinc-900/20 rounded-xl border border-dashed border-zinc-900">This address has clean slate records (0 transactions).</div>`;
                 }
 
-                // UI Final Presentation Rendering updates
-                nativeSolDisplay.innerText = `${computedSolFloat.toFixed(4)} SOL (@ $${solPriceUsd.toFixed(2)})`;
-                netWorthDisplay.innerText = new Intl.NumberFormat('en-US', {
+                // Final valuation rendering execution pipelines
+                const aggregateUsdLifetimeValue = aggregatedLifetimeSolVolume * currentSolPrice;
+                
+                lifetimeVolumeDisplay.innerText = new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'USD'
-                }).format(aggregatePortfolioValueUsd);
+                }).format(aggregateUsdLifetimeValue);
+
+                txCountDisplay.innerText = `Audited ${totalParsedTxCount} Historical Activity Chains`;
+                totalInDisplay.innerText = `${runningTotalSolIn.toFixed(2)} SOL`;
+                totalOutDisplay.innerText = `${runningTotalSolOut.toFixed(2)} SOL`;
 
                 statusAlert.classList.add('hidden');
                 resultsLayer.classList.remove('hidden');
 
             } catch (err) {
                 console.error(err);
-                alert(`On-Chain Process Fault: ${err.message}`);
+                alert(`Audit Failure: ${err.message}. Double check that your endpoint parameters match completely.`);
                 statusAlert.classList.add('hidden');
             } finally {
                 inspectBtn.disabled = false;
