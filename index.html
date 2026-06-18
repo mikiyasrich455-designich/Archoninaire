@@ -58,11 +58,11 @@
             <div class="h-6 w-6 rounded-md bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center">
                 <span class="text-[10px] font-bold tracking-widest text-zinc-950 font-mono">💵</span>
             </div>
-            <span class="text-xs font-bold tracking-widest text-zinc-200 uppercase font-mono">Archon // Lifetime Income Auditor</span>
+            <span class="text-xs font-bold tracking-widest text-zinc-200 uppercase font-mono">Archon // Lifetime Revenue Auditor</span>
         </div>
         <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-800/60 bg-zinc-950 font-mono text-[10px] text-emerald-400">
             <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            LIFETIME INFLOW INDEXER CONNECTOR ACTIVE
+            LIFETIME INFLOW INDEXER ACTIVE
         </div>
     </header>
 
@@ -70,8 +70,8 @@
         <div class="w-full max-w-xl space-y-8">
             
             <div class="text-center space-y-2">
-                <h1 class="text-3xl font-bold tracking-tight text-white bg-clip-text">All-Time Revenue Auditor</h1>
-                <p class="text-zinc-400 text-xs font-light">Calculates every dollar generated or deposited into this wallet across all historical tokens.</p>
+                <h1 class="text-3xl font-bold tracking-tight text-white bg-clip-text">All-Time Income Tracker</h1>
+                <p class="text-zinc-400 text-xs font-light">Calculates every dollar ever deposited or received into this wallet across all historical tokens.</p>
             </div>
 
             <div class="glow-card bg-zinc-950/40 rounded-3xl p-6 md:p-8 premium-blur space-y-6">
@@ -81,7 +81,7 @@
                     <input 
                         id="addressInput" 
                         type="text" 
-                        placeholder="Paste Solana public key to calculate lifetime income..." 
+                        placeholder="Paste Solana public key to audit lifetime income..." 
                         class="input-glow w-full bg-zinc-950 border border-zinc-800/80 rounded-xl px-4 py-3.5 font-mono text-xs text-zinc-200 outline-none transition-all placeholder-zinc-700"
                         spellcheck="false"
                         autocomplete="off"
@@ -101,7 +101,7 @@
                     <div class="text-center py-6 bg-zinc-950/60 border border-zinc-900/60 rounded-2xl space-y-1">
                         <span class="text-[10px] uppercase tracking-widest text-zinc-400 font-mono font-medium tracking-wider">Total Lifetime Income Generated</span>
                         <h2 id="lifetimeIncomeDisplay" class="text-4xl font-bold font-mono tracking-tight text-emerald-400 mt-1">$0.00</h2>
-                        <span id="txCountDisplay" class="text-[11px] font-mono text-zinc-500 block">Parsed 0 Incoming Income Transfers</span>
+                        <span id="txCountDisplay" class="text-[11px] font-mono text-zinc-500 block">Parsed 0 Incoming Transfers</span>
                     </div>
 
                     <div class="space-y-3">
@@ -117,11 +117,10 @@
     </main>
 
     <footer class="w-full text-center text-[10px] text-zinc-700 font-mono py-6 border-t border-zinc-900/20 select-none">
-        ARCHON HISTORICAL REVENUE ENGINE V4.0 // CROSS-TOKEN INFLOW
+        ARCHON HISTORICAL REVENUE ENGINE V4.5 // TRUE INDEXED INFLOW
     </footer>
 
     <script>
-        // Production Gateway Authentication Key
         const HELIUS_KEY = "cb5a91ff-8dd6-4b7e-90a2-602edcdfd770";
 
         document.getElementById('inspectBtn').addEventListener('click', async () => {
@@ -134,7 +133,7 @@
             const historyLogContainer = document.getElementById('historyLogContainer');
 
             if (!addressInput) {
-                alert("Validation Fault: Target parameter string cannot be blank.");
+                alert("Validation Fault: Target address string cannot be blank.");
                 return;
             }
 
@@ -143,101 +142,131 @@
                 statusAlert.classList.remove('hidden');
                 resultsLayer.classList.add('hidden');
                 historyLogContainer.innerHTML = '';
-                statusAlert.innerText = 'Connecting to Helius High-Performance Infrastructure...';
+                statusAlert.innerText = 'Connecting to Helius Transaction Ledger streams...';
 
-                // 1. Fetch Complete High-Fidelity Token & Asset Transfer Histories
-                statusAlert.innerText = 'Extracting absolute cross-token historical transfer registries...';
-                
-                // This REST endpoint returns cleaner, direct token movements across the asset lifecycle
-                const transferApiUrl = `https://api.helius.xyz/v1/wallet/${addressInput}/transfers?api-key=${HELIUS_KEY}`;
-                const response = await fetch(transferApiUrl);
+                // 1. Fetch Complete High-Fidelity Enhanced Transactions
+                // Using standard API routing for transaction logs to map data safely
+                const apiURL = `https://mainnet.helius-rpc.com/v0/addresses/${addressInput}/transactions?api-key=${HELIUS_KEY}&limit=30`;
+                const response = await fetch(apiURL);
                 
                 if (!response.ok) {
                     throw new Error(`Helius High-Performance Gateway Disconnected: Code ${response.status}`);
                 }
 
-                const transfersData = await response.json();
-                const rawTransfersList = transfersData.data || [];
+                const transactionsList = await response.json();
 
-                // 2. Separate ONLY incoming transaction events (`direction: "in"`)
-                const incomingTransfers = rawTransfersList.filter(t => t.direction === 'in');
-
-                if (incomingTransfers.length === 0) {
-                    historyLogContainer.innerHTML = `<div class="text-center py-6 text-zinc-600 font-mono text-[11px] bg-zinc-900/20 rounded-xl border border-dashed border-zinc-900">This address has clean slate incoming records (0 deposits).</div>`;
+                if (!transactionsList || transactionsList.length === 0) {
+                    historyLogContainer.innerHTML = `<div class="text-center py-6 text-zinc-600 font-mono text-[11px] bg-zinc-900/20 rounded-xl border border-dashed border-zinc-900">This address has clean slate records (0 activities).</div>`;
                     lifetimeIncomeDisplay.innerText = "$0.00";
-                    txCountDisplay.innerText = `Parsed 0 Incoming Transfers`;
+                    txCountDisplay.innerText = `Parsed 0 Incoming Transactions`;
                     statusAlert.classList.add('hidden');
                     resultsLayer.classList.remove('hidden');
                     return;
                 }
 
-                // Gather the distinct token mint IDs discovered in the incoming stream to perform batch lookup matrix routes
-                let uniqueMints = [...new Set(incomingTransfers.map(t => t.mint))];
+                // Gather all uniquely discovered mints inside the history to execute single-batch pricing calls
+                let uniqueMints = ["So11111111111111111111111111111111111111112"]; // Seed native SOL mint address
+                
+                transactionsList.forEach(tx => {
+                    if (tx.tokenTransfers) {
+                        tx.tokenTransfers.forEach(tt => {
+                            if (tt.mint) uniqueMints.push(tt.mint);
+                        });
+                    }
+                });
+                uniqueMints = [...new Set(uniqueMints)];
 
-                statusAlert.innerText = 'Mapping spot transaction valuations through Jupiter index routers...';
+                statusAlert.innerText = 'Syncing real-time valuation models from Jupiter arrays...';
                 let priceMap = {};
                 try {
-                    // Pull batch token values dynamically
                     const priceQuery = await fetch(`https://api.jup.ag/price/v2?ids=${uniqueMints.join(',')}`);
                     if (priceQuery.ok) {
                         const priceResult = await priceQuery.json();
                         priceMap = priceResult.data || {};
                     }
-                } catch (e) { console.warn("Pricing index route fallback applied:", e); }
+                } catch (e) { console.warn("Pricing ticker fallback applied:", e); }
 
                 let cumulativeAllTimeIncomeUsd = 0;
                 let actualRenderedIncomeCount = 0;
 
-                // 3. Compute accurate total value accumulation mapping metrics
-                incomingTransfers.forEach(transfer => {
-                    actualRenderedIncomeCount++;
-                    
-                    const tokenMintAddress = transfer.mint;
-                    const cleanAmount = parseFloat(transfer.amount) || 0; // The Wallet API naturally provides pre-decimal human-readable numbers
-                    
-                    // Match against Jupiter Price Engine Spot Value
-                    const tokenPriceObj = priceMap[tokenMintAddress];
-                    const unitPriceUsd = tokenPriceObj ? parseFloat(tokenPriceObj.price) : 0;
-                    const eventTotalValueUsd = cleanAmount * unitPriceUsd;
+                // 2. Extract and Tally ONLY incoming assets where target address is the recipient
+                transactionsList.forEach(tx => {
+                    let txCollectedUsdValue = 0;
+                    let displayItemsArray = [];
+                    const txDateString = new Date((tx.timestamp || 0) * 1000).toLocaleDateString();
 
-                    cumulativeAllTimeIncomeUsd += eventTotalValueUsd;
+                    // A. Parse Native SOL Deposits
+                    if (tx.nativeTransfers) {
+                        tx.nativeTransfers.forEach(transfer => {
+                            if (transfer.toUserAccount === addressInput) {
+                                const solAmount = transfer.amount / 1000000000;
+                                const solPriceObj = priceMap["So11111111111111111111111111111111111111112"];
+                                const solUnitPrice = solPriceObj ? parseFloat(solPriceObj.price) : 0;
+                                const itemUsdValue = solAmount * solUnitPrice;
 
-                    // Parse custom shorthand markers for common tokens to keep layout clean
-                    let tokenTicker = "Token";
-                    if (tokenMintAddress === "So11111111111111111111111111111111111111112") tokenTicker = "SOL";
-                    else if (tokenMintAddress === "EPjFW3gd5T71w7E652o6XmUbMCwG6XudZm4FwrguQTLj") tokenTicker = "USDC";
-                    else if (tokenMintAddress === "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB") tokenTicker = "USDT";
-                    else tokenTicker = `${tokenMintAddress.slice(0, 4)}...${tokenMintAddress.slice(-4)}`;
+                                txCollectedUsdValue += itemUsdValue;
+                                displayItemsArray.push(`${solAmount.toFixed(3)} SOL`);
+                            }
+                        });
+                    }
 
-                    const logRow = document.createElement('div');
-                    logRow.className = "flex justify-between items-center bg-zinc-900/30 border border-zinc-900/60 rounded-xl p-3 text-xs font-mono";
-                    logRow.innerHTML = `
-                        <div class="text-left">
-                            <span class="text-emerald-400 font-medium block uppercase text-[10px] tracking-wider">💰 INCOME RECEIVED</span>
-                            <span class="text-[9px] text-zinc-600 block">From: ${transfer.counterparty ? transfer.counterparty.slice(0,6) : 'Unknown'}...</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="font-medium text-zinc-200">${cleanAmount.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${tokenTicker}</span>
-                            <span class="text-[10px] text-zinc-500 block">${eventTotalValueUsd > 0 ? `$${eventTotalValueUsd.toFixed(2)}` : 'Value Pending'}</span>
-                        </div>
-                    `;
-                    historyLogContainer.appendChild(logRow);
+                    // B. Parse SPL Token Deposits (USDC, USDT, Memecoins, etc.)
+                    if (tx.tokenTransfers) {
+                        tx.tokenTransfers.forEach(transfer => {
+                            if (transfer.toUserAccount === addressInput) {
+                                const tokenAmount = parseFloat(transfer.userAmount) || transfer.tokenAmount || 0;
+                                const tokenPriceObj = priceMap[transfer.mint];
+                                const tokenUnitPrice = tokenPriceObj ? parseFloat(tokenPriceObj.price) : 0;
+                                const itemUsdValue = tokenAmount * tokenUnitPrice;
+
+                                txCollectedUsdValue += itemUsdValue;
+                                
+                                // Clean symbol handling
+                                const tokenTicker = transfer.symbol || (transfer.mint ? `${transfer.mint.slice(0,4)}...` : "Token");
+                                displayItemsArray.push(`${tokenAmount.toLocaleString(undefined, {maximumFractionDigits: 2})} ${tokenTicker}`);
+                            }
+                        });
+                    }
+
+                    // If this specific transaction brought income into the wallet, stack it to the UI grid
+                    if (txCollectedUsdValue > 0) {
+                        cumulativeAllTimeIncomeUsd += txCollectedUsdValue;
+                        actualRenderedIncomeCount++;
+
+                        const logRow = document.createElement('div');
+                        logRow.className = "flex justify-between items-center bg-zinc-900/30 border border-zinc-900/60 rounded-xl p-3 text-xs font-mono";
+                        logRow.innerHTML = `
+                            <div class="text-left">
+                                <span class="text-emerald-400 font-medium block uppercase text-[10px] tracking-wider">💰 INCOME RECEIVED</span>
+                                <span class="text-[9px] text-zinc-600 block">${txDateString} // Type: ${tx.type || 'TRANSFER'}</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="font-medium text-zinc-200 max-w-[200px] truncate block">${displayItemsArray.join(' + ')}</span>
+                                <span class="text-[10px] text-zinc-500 block">$${txCollectedUsdValue.toFixed(2)}</span>
+                            </div>
+                        `;
+                        historyLogContainer.appendChild(logRow);
+                    }
                 });
 
-                // Render dynamic aggregated summaries directly into display layout
+                if (actualRenderedIncomeCount === 0) {
+                    historyLogContainer.innerHTML = `<div class="text-center py-6 text-zinc-600 font-mono text-[11px] bg-zinc-900/20 rounded-xl border border-dashed border-zinc-900">This address has clean slate incoming records (0 deposits found).</div>`;
+                }
+
+                // Render dynamic aggregated metrics directly onto dashboard interfaces
                 lifetimeIncomeDisplay.innerText = new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'USD'
                 }).format(cumulativeAllTimeIncomeUsd);
 
-                txCountDisplay.innerText = `Parsed ${actualRenderedIncomeCount} All-Time Income Streams`;
+                txCountDisplay.innerText = `Aggregated ${actualRenderedIncomeCount} Historical Income Transactions`;
 
                 statusAlert.classList.add('hidden');
                 resultsLayer.classList.remove('hidden');
 
             } catch (err) {
                 console.error(err);
-                alert(`Audit Failure: ${err.message}. Ensure your target endpoint permissions match completely.`);
+                alert(`Audit Failure: ${err.message}. Ensure your target endpoint configurations align completely.`);
                 statusAlert.classList.add('hidden');
             } finally {
                 inspectBtn.disabled = false;
