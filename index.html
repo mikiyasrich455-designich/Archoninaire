@@ -151,14 +151,13 @@
             }
 
             try {
-                // Initialize Loading UI layouts
                 inspectBtn.disabled = true;
                 statusAlert.classList.remove('hidden');
                 resultsLayer.classList.add('hidden');
                 historyLogContainer.innerHTML = '';
                 statusAlert.innerText = 'Initializing full history node traverse queries...';
 
-                // Fetch current SOL price to determine historical USD ratios safely
+                // Fetch real-time asset market index valuation via Jupiter
                 let currentSolPrice = 145.00;
                 try {
                     const priceQuery = await fetch("https://api.jup.ag/price/v2?ids=So11111111111111111111111111111111111111112");
@@ -168,9 +167,10 @@
                     }
                 } catch(e) { console.warn(e); }
 
-                // Fetch Enhanced Parsed Transactions History from Helius endpoints
                 statusAlert.innerText = 'Scanning block logs via Helius Enhanced Indexer...';
-                const historyUrl = `https://api.helius-rpc.com/v0/addresses/${addressInput}/transactions?api-key=${HELIUS_KEY}&limit=40`;
+                
+                // ⚡ FIXED URL DOMAIN ROUTE HERE (Changed to mainnet.helius-rpc.com)
+                const historyUrl = `https://mainnet.helius-rpc.com/v0/addresses/${addressInput}/transactions?api-key=${HELIUS_KEY}&limit=40`;
                 const response = await fetch(historyUrl);
                 
                 if (!response.ok) {
@@ -184,16 +184,14 @@
                 let runningTotalSolOut = 0;
                 let totalParsedTxCount = 0;
 
-                // Loop historical entries to compute volume allocations
                 transactionsList.forEach(tx => {
                     totalParsedTxCount++;
                     let txIncurredSolValue = 0;
                     let activityTypeLabel = tx.type || "TRANSACTION";
 
-                    // Calculate Native SOL flow layers inside nativeTransfers arrays
                     if (tx.nativeTransfers && tx.nativeTransfers.length > 0) {
                         tx.nativeTransfers.forEach(transfer => {
-                            const transferAmountSol = transfer.amount / 1000000000; // Convert lamports to floating points
+                            const transferAmountSol = transfer.amount / 1000000000;
                             txIncurredSolValue += transferAmountSol;
 
                             if (transfer.toUserAccount === addressInput) {
@@ -207,7 +205,6 @@
 
                     aggregatedLifetimeSolVolume += txIncurredSolValue;
 
-                    // Append event row components onto display layouts dynamically
                     const logRow = document.createElement('div');
                     logRow.className = "flex justify-between items-center bg-zinc-900/30 border border-zinc-900/60 rounded-xl p-3 text-xs font-mono";
                     logRow.innerHTML = `
@@ -227,7 +224,6 @@
                     historyLogContainer.innerHTML = `<div class="text-center py-6 text-zinc-600 font-mono text-[11px] bg-zinc-900/20 rounded-xl border border-dashed border-zinc-900">This address has clean slate records (0 transactions).</div>`;
                 }
 
-                // Final valuation rendering execution pipelines
                 const aggregateUsdLifetimeValue = aggregatedLifetimeSolVolume * currentSolPrice;
                 
                 lifetimeVolumeDisplay.innerText = new Intl.NumberFormat('en-US', {
