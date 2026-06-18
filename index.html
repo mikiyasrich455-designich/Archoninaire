@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archon // On-Chain Live Tracker</title>
+    <title>Archon // Multi-Wallet Realtime Engine</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@solana/web3.js@1.95.3/lib/index.iife.js"></script>
     
@@ -59,11 +59,11 @@
             <div class="h-6 w-6 rounded-md bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center">
                 <span class="text-[10px] font-bold tracking-widest text-white font-mono">⚡</span>
             </div>
-            <span class="text-xs font-bold tracking-widest text-zinc-200 uppercase font-mono">Archon // Live Realtime Engine</span>
+            <span class="text-xs font-bold tracking-widest text-zinc-200 uppercase font-mono">Archon // Real-Time Value Router</span>
         </div>
-        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-800/60 bg-zinc-950 font-mono text-[10px] text-emerald-400">
-            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            HELIUS RPC GATEWAY CONNECTED
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-zinc-800/60 bg-zinc-950 font-mono text-[10px] text-blue-400">
+            <span class="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+            HELIUS NODE PROTOCOL ACTIVE
         </div>
     </header>
 
@@ -71,18 +71,18 @@
         <div class="w-full max-w-xl space-y-8">
             
             <div class="text-center space-y-2">
-                <h1 class="text-3xl font-bold tracking-tight text-white bg-clip-text">On-Chain Value Inspector</h1>
-                <p class="text-zinc-400 text-xs font-light">Fetches immediate asset balances and token pricing calculations straight from the core RPC layer.</p>
+                <h1 class="text-3xl font-bold tracking-tight text-white bg-clip-text">Universal Wallet Tracker</h1>
+                <p class="text-zinc-400 text-xs font-light">Fetches live inventory metrics for any valid public Solana address instantly.</p>
             </div>
 
             <div class="glow-card bg-zinc-950/40 rounded-3xl p-6 md:p-8 premium-blur space-y-6">
                 
                 <div class="space-y-2">
-                    <label class="block text-[10px] uppercase tracking-widest text-zinc-500 font-semibold font-mono" for="addressInput">Target Wallet Address</label>
+                    <label class="block text-[10px] uppercase tracking-widest text-zinc-500 font-semibold font-mono" for="addressInput">Target Address</label>
                     <input 
                         id="addressInput" 
                         type="text" 
-                        placeholder="Paste any base58 Solana public key..." 
+                        placeholder="Paste any SOL/SPL wallet address..." 
                         class="input-glow w-full bg-zinc-950 border border-zinc-800/80 rounded-xl px-4 py-3.5 font-mono text-xs text-zinc-200 outline-none transition-all placeholder-zinc-700"
                         spellcheck="false"
                         autocomplete="off"
@@ -94,7 +94,7 @@
                 </button>
 
                 <div id="statusAlert" class="hidden text-center font-mono text-xs text-zinc-500 animate-pulse py-2">
-                    Querying on-chain state hashes...
+                    Awaiting target execution...
                 </div>
 
                 <div id="resultsLayer" class="hidden space-y-6 pt-4 border-t border-zinc-900/80 transition-all duration-500">
@@ -107,7 +107,7 @@
 
                     <div class="space-y-3">
                         <span class="text-[10px] uppercase tracking-widest text-zinc-500 font-mono font-medium">Identified SPL Token Assets</span>
-                        <div id="tokenInventoryContainer" class="token-scroll max-h-48 overflow-y-auto space-y-2 pr-1">
+                        <div id="tokenInventoryContainer" class="token-scroll max-h-56 overflow-y-auto space-y-2 pr-1">
                             </div>
                     </div>
 
@@ -118,20 +118,12 @@
     </main>
 
     <footer class="w-full text-center text-[10px] text-zinc-700 font-mono py-6 border-t border-zinc-900/20 select-none">
-        ARCHON REALTIME TELEMETRY PROTOCOL LAYER V2 // NO CACHE
+        ARCHON REALTIME TELEMETRY PROTOCOL LAYER V2.5 // NO CACHE
     </footer>
 
     <script>
-        // YOUR FIXED SECURE HELIUS LINK PLUGGED IN DIRECTLY BELOW
-        const rpcConnection = new solanaWeb3.Connection("https://mainnet-rpc.com/?api-key=cb5a91ff-8dd6-4b7e-90a2-602edcdfd770", "confirmed");
-
-        // Open Source Public Mint Identifier Dictionary Mapping for Mainnet Tokens
-        const KNOWN_MINTS = {
-            "EPjFW3gd5T71w7E652o6XmUbMCwG6XudZm4FwrguQTLj": { name: "USD Coin", symbol: "USDC", decimals: 6 },
-            "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB": { name: "USDT", symbol: "USDT", decimals: 6 },
-            "HzwqbK18aRhwKmB6msMfhkH6TWjC3oKQvjS56uSa3Vo8": { name: "Wrapped SOL", symbol: "WSOL", decimals: 9 },
-            "JUPyiwrYJFskUP27GYbbor8at9tfXMMnaRntwbAK54cD": { name: "Jupiter", symbol: "JUP", decimals: 6 }
-        };
+        // ⚡ EXACTLY RE-MAPPED VALID HELIUS GATEWAY HOST URL WITH YOUR KEY
+        const rpcConnection = new solanaWeb3.Connection("https://mainnet.helius-rpc.com/?api-key=cb5a91ff-8dd6-4b7e-90a2-602edcdfd770", "confirmed");
 
         document.getElementById('inspectBtn').addEventListener('click', async () => {
             const addressInput = document.getElementById('addressInput').value.trim();
@@ -150,85 +142,104 @@
             try {
                 const targetPublicKey = new solanaWeb3.PublicKey(addressInput);
 
-                // UI Loading Trigger States
+                // Initialize Loading Layouts
                 inspectBtn.disabled = true;
                 statusAlert.classList.remove('hidden');
                 resultsLayer.classList.add('hidden');
                 tokenContainer.innerHTML = '';
-                statusAlert.innerText = 'Pinging Helius RPC Mainnet clusters...';
+                statusAlert.innerText = 'Pinging your Helius cluster...';
 
                 // 1. Fetch Real-Time Native SOL Balances
                 const nativeLamportBalance = await rpcConnection.getBalance(targetPublicKey);
                 const computedSolFloat = nativeLamportBalance / solanaWeb3.LAMPORTS_PER_SOL;
 
-                // 2. Fetch Live Price Matrix ratios from open Jupiter quote index configurations
-                statusAlert.innerText = 'Resolving current market value pricing routes...';
-                let nativeSolUsdPrice = 145.00; 
-                
-                try {
-                    const priceQuery = await fetch("https://api.jup.ag/price/v2?ids=So11111111111111111111111111111111111111112");
-                    if (priceQuery.ok) {
-                        const priceResult = await priceQuery.json();
-                        nativeSolUsdPrice = parseFloat(priceResult.data["So11111111111111111111111111111111111111112"].price) || nativeSolUsdPrice;
-                    }
-                } catch(e) {
-                    console.warn("Pricing route fallback applied:", e);
-                }
-
-                let totalCalculatedValueUsd = computedSolFloat * nativeSolUsdPrice;
-
-                // 3. Fetch Every SPL Token Account Owned By This Address
-                statusAlert.innerText = 'Extracting active matching SPL program account lines...';
+                // 2. Fetch Every Single Asset Account Line Owned By Target Address
+                statusAlert.innerText = 'Parsing account layout registries...';
                 const parsedTokenAccounts = await rpcConnection.getParsedTokenAccountsByOwner(
                     targetPublicKey,
                     { programId: new solanaWeb3.PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA") }
                 );
 
-                let trackingTokensFoundCount = 0;
+                // Collect mint addresses to pull dynamic batch prices
+                let mintList = ["So11111111111111111111111111111111111111112"]; 
+                let tokenBalancesArray = [];
 
                 parsedTokenAccounts.value.forEach(accountInfo => {
                     const parsedData = accountInfo.account.data.parsed.info;
                     const mintAddress = parsedData.mint;
-                    const tokenAmountFloat = parsedData.tokenAmount.uiAmount;
+                    const amountFloat = parsedData.tokenAmount.uiAmount;
 
-                    if (tokenAmountFloat > 0) {
-                        trackingTokensFoundCount++;
-                        
-                        const metadata = KNOWN_MINTS[mintAddress] || { name: "Unknown Token", symbol: `SPL (${mintAddress.slice(0, 4)})`, decimals: parsedData.tokenAmount.decimals };
-                        
-                        const tokenRow = document.createElement('div');
-                        tokenRow.className = "flex justify-between items-center bg-zinc-900/40 border border-zinc-950 rounded-xl p-3 hover:bg-zinc-900/80 transition-colors duration-200";
-                        tokenRow.innerHTML = `
-                            <div>
-                                <h4 class="text-xs font-semibold text-zinc-200">${metadata.name}</h4>
-                                <span class="text-[10px] font-mono text-zinc-500">${metadata.symbol}</span>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-xs font-mono font-medium text-zinc-300">${tokenAmountFloat.toLocaleString(undefined, { maximumFractionDigits: 4 })}</span>
-                            </div>
-                        `;
-                        tokenContainer.appendChild(tokenRow);
+                    if (amountFloat > 0) {
+                        mintList.push(mintAddress);
+                        tokenBalancesArray.push({
+                            mint: mintAddress,
+                            amount: amountFloat,
+                            decimals: parsedData.tokenAmount.decimals
+                        });
                     }
                 });
 
-                if (trackingTokensFoundCount === 0) {
-                    tokenContainer.innerHTML = `<div class="text-center py-6 text-zinc-600 font-mono text-[11px] bg-zinc-900/20 rounded-xl border border-dashed border-zinc-900">No active SPL token positions tracked.</div>`;
+                // 3. Request Batch Live Spot Prices from Jupiter Protocol Engine
+                statusAlert.innerText = 'Routing price matrix tickers...';
+                let priceMap = {};
+                
+                try {
+                    // Jupiter v2 Batch Endpoint pulls live quotes for all tokens at once
+                    const uniqueMints = [...new Set(mintList)].slice(0, 100); // Guard token array ceiling limits
+                    const priceQuery = await fetch(`https://api.jup.ag/price/v2?ids=${uniqueMints.join(',')}`);
+                    if (priceQuery.ok) {
+                        const priceResult = await priceQuery.json();
+                        priceMap = priceResult.data || {};
+                    }
+                } catch (e) {
+                    console.warn("Failed pricing registry handshake, fallback triggered:", e);
                 }
 
-                // Update text valuations
-                nativeSolDisplay.innerText = `${computedSolFloat.toFixed(4)} SOL (@ $${nativeSolUsdPrice.toFixed(2)})`;
+                // Resolve Native SOL Values
+                const solPriceObj = priceMap["So11111111111111111111111111111111111111112"];
+                const solPriceUsd = solPriceObj ? parseFloat(solPriceObj.price) : 0;
+                let aggregatePortfolioValueUsd = computedSolFloat * solPriceUsd;
+
+                // Render out SPL inventory entries onto DOM tree dynamically
+                tokenBalancesArray.forEach(token => {
+                    const priceData = priceMap[token.mint];
+                    const unitPriceUsd = priceData ? parseFloat(priceData.price) : 0;
+                    const calculatedTotalValueUsd = token.amount * unitPriceUsd;
+                    
+                    aggregatePortfolioValueUsd += calculatedTotalValueUsd;
+
+                    const tokenRow = document.createElement('div');
+                    tokenRow.className = "flex justify-between items-center bg-zinc-900/40 border border-zinc-900 rounded-xl p-3 hover:bg-zinc-900/80 transition-colors duration-200";
+                    tokenRow.innerHTML = `
+                        <div>
+                            <h4 class="text-xs font-semibold text-zinc-200 max-w-[180px] truncate font-mono">${token.mint.slice(0,6)}...${token.mint.slice(-6)}</h4>
+                            <span class="text-[10px] font-mono text-zinc-500">${unitPriceUsd > 0 ? `$${unitPriceUsd.toFixed(4)}` : 'No Price Data'}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs font-mono font-medium text-zinc-300 block">${token.amount.toLocaleString(undefined, { maximumFractionDigits: 4 })}</span>
+                            <span class="text-[10px] font-mono text-zinc-500">${calculatedTotalValueUsd > 0 ? `$${calculatedTotalValueUsd.toFixed(2)}` : ''}</span>
+                        </div>
+                    `;
+                    tokenContainer.appendChild(tokenRow);
+                });
+
+                if (tokenBalancesArray.length === 0) {
+                    tokenContainer.innerHTML = `<div class="text-center py-6 text-zinc-600 font-mono text-[11px] bg-zinc-900/20 rounded-xl border border-dashed border-zinc-900">No active SPL balances identified.</div>`;
+                }
+
+                // UI Final Presentation Rendering updates
+                nativeSolDisplay.innerText = `${computedSolFloat.toFixed(4)} SOL (@ $${solPriceUsd.toFixed(2)})`;
                 netWorthDisplay.innerText = new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'USD'
-                }).format(totalCalculatedValueUsd);
+                }).format(aggregatePortfolioValueUsd);
 
-                // Reveal presentation container arrays smoothly
                 statusAlert.classList.add('hidden');
                 resultsLayer.classList.remove('hidden');
 
             } catch (err) {
                 console.error(err);
-                alert(`On-Chain Lookup Error: ${err.message}. Make sure the target string is a completely valid 44-character base58 public key.`);
+                alert(`On-Chain Process Fault: ${err.message}`);
                 statusAlert.classList.add('hidden');
             } finally {
                 inspectBtn.disabled = false;
